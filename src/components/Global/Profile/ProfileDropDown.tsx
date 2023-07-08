@@ -6,61 +6,23 @@ import MenuList from "@mui/material/MenuList";
 import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import Stack from "@mui/material/Stack";
-import { getAuth, signOut } from "firebase/auth";
-import * as React from "react";
+
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useSignOut } from "../hook/useSignOut";
+import { Warning } from "../Warning/Warning";
 
-export const ProfileDropDown = () => {
-  const navigate = useNavigate();
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef<HTMLButtonElement>(null);
-
-  const auth = getAuth();
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(res => {
-        alert("SignOut Successfull");
-      })
-      .catch(error => {
-        alert(error);
-      });
-    navigate("/signup");
-  };
-
-  const handleToggle = () => {
-    setOpen(prevOpen => !prevOpen);
-  };
-
-  const handleClose = (event: Event | React.SyntheticEvent) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
-      return;
-    }
-    setOpen(false);
-  };
-
-  const handleLogOut = () => {
-    navigate("/login");
-  };
-
-  function handleListKeyDown(event: React.KeyboardEvent) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-
-      setOpen(false);
-    } else if (event.key === "Escape") {
-      setOpen(false);
-    }
-  }
-
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current!.focus();
-    }
-
-    prevOpen.current = open;
-  }, [open]);
+export const ProfileDropDown: React.FC = () => {
+  const {
+    handleAgree,
+    handleClose,
+    handleDisagree,
+    handleListKeyDown,
+    handleLogOut,
+    handleToggle,
+    open,
+    showWarning,
+    anchorRef,
+  } = useSignOut();
 
   return (
     <Stack direction="row" spacing={2}>
@@ -99,7 +61,6 @@ export const ProfileDropDown = () => {
                     onKeyDown={handleListKeyDown}
                   >
                     <MenuItem onClick={handleLogOut}>Logout</MenuItem>
-                    <MenuItem onClick={handleSignOut}>SignOut</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -107,6 +68,7 @@ export const ProfileDropDown = () => {
           )}
         </Popper>
       </div>
+      {showWarning && <Warning onAgree={handleAgree} onDisagree={handleDisagree} />}
     </Stack>
   );
 };

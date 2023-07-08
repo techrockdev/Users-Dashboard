@@ -1,47 +1,42 @@
-import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
-import { IUser, useUser } from "./base";
+import { useContext } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { AuthContext } from "./components/context/AuthContext";
+import { useAuth } from "./components/Global";
 import { Dashboard } from "./components/Pages/Dashboard/Dashboard";
-import Login from "./components/Pages/Login/Login";
-import { Signup } from "./components/Pages/SignUp/SignUp";
+import { Login } from "./components/Pages/Login/Login";
+import { SignUp } from "./components/Pages/SignUp/SignUp";
 import { TransactionHistory } from "./components/Pages/TransactionHistory/TransactionHistory";
-import { auth } from "./config/firebase";
 
 const App = () => {
-  const setUser = useUser(state => state.setUser);
+  const authUser = useAuth();
+  const { currentUser } = useContext(AuthContext);
 
-  useEffect(() => {
-    auth.onAuthStateChanged((responseUser: any) => {
-      if (responseUser) {
-        const displayName = responseUser.displayName;
-        const uid = responseUser.uid;
-        const reloadUserInfo = responseUser.reloadUserInfo;
-
-        const user: IUser = {
-          uid,
-          displayName,
-          email: reloadUserInfo.email,
-          createdAt: reloadUserInfo.createdAt,
-          emailVerified: reloadUserInfo.emailVerified,
-          lastLoginAt: reloadUserInfo.lastLoginAt,
-          lastRefreshAt: reloadUserInfo.lastRefreshAt,
-          photoUrl: reloadUserInfo.photoUrl,
-        };
-
-        setUser(user);
-      }
-    });
-  }, []);
-
+  const RequireAuth = ({ children }: { children: any }) => {
+    return currentUser ? children : <Navigate to="/login" />;
+  };
   return (
     <div className="flex h-[100vh] w-full bg-primary font-inter tracking-wide">
       <div className="w-full">
         <Routes>
-          <Route path="/" element={<Signup />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/transaction-history" element={<TransactionHistory />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/" element={<SignUp />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAuth>
+                <Dashboard />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/transaction-history"
+            element={
+              <RequireAuth>
+                <TransactionHistory />
+              </RequireAuth>
+            }
+          />
         </Routes>
       </div>
     </div>

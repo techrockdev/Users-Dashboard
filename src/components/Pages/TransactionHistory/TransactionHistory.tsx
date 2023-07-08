@@ -1,5 +1,6 @@
 import { IUser, useUser } from "../../../base";
 import { MaxCard } from "../../Global/Card/MaxCard/MaxCard";
+import { LoadingModal } from "../../Global/LoadingModal/LoadingModal";
 import { Header } from "../../Layouts/Header/Header";
 import { SideBar } from "../../Layouts/SideBar/SideBar";
 
@@ -11,7 +12,7 @@ export const TransactionHistory = () => {
       <SideBar />
       <div className="w-full overflow-y-scroll">
         <MaxCard>
-          <Header routerName="Transaction History" name={displayName ?? "loading..."} />
+          <Header routerName="Transaction History" name={displayName ?? <LoadingModal />} />
         </MaxCard>
       </div>
     </div>

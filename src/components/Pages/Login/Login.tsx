@@ -1,74 +1,82 @@
-import { Link } from "react-router-dom";
-
-import { Input } from "../../Global/Input/Input";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useContext, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { LoginFormInput, User } from "../../../base";
+import { auth } from "../../../config/firebase";
+import { AuthContext } from "../../context/AuthContext";
 import { AlertError } from "../../Global/Alert/Alert";
-import { AlertSuccess } from "../../Global/Alert/AlertSuccess";
-import { Button } from "../../Global/Button/Button";
 import { Card } from "../../Global/Card/Card";
 import { MaxCard } from "../../Global/Card/MaxCard/MaxCard";
-import { useLogIn } from "../../Global/hooks/useLoginIn";
+import { LoadingModal } from "../../Global/LoadingModal/LoadingModal";
 
-function Login() {
+export const Login: React.FC = () => {
+  const navigate = useNavigate();
   const {
-    handleSubmission,
-    email,
-    emailHanlder,
-    password,
-    passwordHanlder,
-    errorMsg,
-    successMsg,
-    submitButtonDisabled,
-    setShowAlert,
-  } = useLogIn();
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInput>();
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { dispatch } = useContext(AuthContext);
+
+  const onSubmit: SubmitHandler<LoginFormInput> = async data => {
+    try {
+      setIsLoading(true);
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      const user: User = {
+        id: userCredential.user.uid,
+        name: userCredential.user.displayName || "",
+        email: userCredential.user.email || "",
+        password: "",
+      };
+      dispatch({ type: "LOGIN", payload: user });
+      navigate("/dashboard");
+    } catch (error: any) {
+      setMessage(error.message);
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-100vh flex h-full w-full items-center justify-center bg-secondary">
-      <MaxCard className="flex h-auto items-center justify-center">
-        <Card className="flex h-fit w-fit flex-col space-x-6 bg-white p-[30px] shadow sm:w-full md:w-[50%]">
+    <div className="flex h-full w-full items-center justify-center bg-secondary">
+      <MaxCard>
+        <Card className="m-auto sm:w-[100%] md:w-[50%]">
           <h1 className="text-center text-xl font-bold">Login</h1>
-
-          <form className="mt-5 flex h-auto flex-col space-y-9" onSubmit={handleSubmission}>
-            <div>
-              <label htmlFor="email">Enter Email:</label>
-              <Input id="email" type="email" value={email} onChange={emailHanlder} placeholder="Enter email address" />
-            </div>
-            <div>
-              <label htmlFor="password">Enter Your Password:</label>
-              <Input
-                id="password"
-                value={password}
-                type="password"
-                onChange={passwordHanlder}
-                placeholder="Enter Password"
-              />
-            </div>
-
-            {errorMsg ? <AlertError onClose={() => setShowAlert(false)}>{errorMsg}</AlertError> : ""}
-            {successMsg ? <AlertSuccess onClose={() => setShowAlert(false)}>{successMsg}</AlertSuccess> : ""}
-            <div className="flex flex-col ">
-              <Button
-                disabled={submitButtonDisabled}
-                className={`${
-                  submitButtonDisabled ? "cursor-wait bg-accent" : "bg-inherit"
-                } w-full rounded border-none bg-secondary px-[16px] py-[10px] font-bold text-white outline-none transition-[100ms] `}
-              >
-                Login
-              </Button>
-              <p className="font-bold text-black ">
-                Already have an account?{" "}
-                <span>
-                  <Link to="/signup" className="leading-1 font-xl font-bold text-secondary decoration-0">
-                    Sign up
-                  </Link>
-                </span>
-              </p>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+            <label className="font-bold">Enter Email:</label>
+            <input
+              {...register("email", { required: true })}
+              className="w-full rounded-lg border-b-2 border-b-[#ebebeb] p-2 outline-none"
+            />
+            {errors.email && <AlertError>Please enter your email</AlertError>}
+            {isLoading ? <LoadingModal /> : ""}
+            <label className="mt-4 font-bold">Enter Password:</label>
+            <input
+              {...register("password", { required: true })}
+              type="password"
+              className="w-full rounded-lg border-b-2 border-b-[#ebebeb] p-2 outline-none"
+            />
+            {errors.password && <AlertError>Please enter your password</AlertError>}
+            {message && <AlertError>{message}</AlertError>}
+            <input
+              type="submit"
+              disabled={isLoading}
+              className={`${
+                isLoading ? "cursor-wait" : "cursor-pointer"
+              } mt-4 cursor-pointer rounded-lg bg-secondary p-2 font-bold text-white outline-none`}
+              value={isLoading ? "Loading..." : "Log In"}
+            />
+            <div className="mt-4 flex space-x-3 italic">
+              <h1 className="font-bold">Dont have an account?</h1>
+              <Link to="/signup" className="text-secondary">
+                Sign Up
+              </Link>
             </div>
           </form>
         </Card>
       </MaxCard>
     </div>
   );
-}
-
-export default Login;
+};

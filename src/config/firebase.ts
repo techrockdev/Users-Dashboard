@@ -1,7 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCxwM__XLeUBOGTCihlBU_YoWtCYuze8rQ",
+  apiKey: process.env.REACT_APP_FIREBASE_KEY,
   authDomain: "gobet-admin-dashboard.firebaseapp.com",
   databaseURL: "https://gobet-admin-dashboard-default-rtdb.firebaseio.com",
   projectId: "gobet-admin-dashboard",
@@ -11,5 +14,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const auth = getAuth();
-export { app, auth };
+const storage = getStorage(app);
+export { app, auth, storage, db };
