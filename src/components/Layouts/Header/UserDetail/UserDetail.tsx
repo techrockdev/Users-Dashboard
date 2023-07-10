@@ -2,7 +2,7 @@ import { FiBell } from "react-icons/fi";
 import { Profile } from "../../../Global/Profile/Profile";
 
 interface NameProps {
-  name: string;
+  name: string | JSX.Element;
 }
 
 export const UserDetail: React.FC<NameProps> = ({ name }) => {

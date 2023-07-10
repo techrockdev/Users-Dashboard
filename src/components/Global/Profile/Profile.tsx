@@ -6,7 +6,7 @@ import { ProfileDropDown } from "./ProfileDropDown";
 
 type ProfileType = ComponentProps<"div"> & {
   icon?: ReactNode;
-  name: string;
+  name: string | JSX.Element;
 };
 
 export const Profile = ({ className, name, ...props }: ProfileType) => {

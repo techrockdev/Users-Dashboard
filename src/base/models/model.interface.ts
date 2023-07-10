@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 export interface IUser {
   createdAt: string;
   displayName: string;
@@ -35,4 +36,20 @@ export interface SignUpFormInput {
   name: string;
   email: string;
   password: string;
+}
+export interface Bet {
+  id: ReactNode;
+  team1: string;
+  team2: string;
+  odd1: number;
+  odd2: number;
+  oddx: number;
+  stadium: string;
+}
+
+export interface Transaction {
+  id: number;
+  amount: number;
+  type: "add" | "withdraw";
+  success: boolean;
 }

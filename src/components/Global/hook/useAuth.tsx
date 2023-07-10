@@ -1,10 +1,17 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import { IUser } from "../../../base/models/model.interface";
 import { useUser } from "../../../base/models/useUser";
 import { auth } from "../../../config/firebase";
+import { AuthContext } from "../../context/AuthContext";
 
 export const useAuth = () => {
   const setUser = useUser(state => state.setUser);
+  const { currentUser } = useContext(AuthContext);
+
+  const RequireAuth = ({ children }: { children: any }) => {
+    return currentUser ? children : <Navigate to="/login" />;
+  };
 
   const authUser = useEffect(() => {
     auth.onAuthStateChanged((responseUser: any) => {
@@ -29,5 +36,5 @@ export const useAuth = () => {
     });
   });
 
-  return { authUser };
+  return { authUser, RequireAuth };
 };

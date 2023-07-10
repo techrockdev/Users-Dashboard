@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { MobileSideBar } from "../SideBar/Mobile/MobileSideBar";
 import { RouterName } from "./RouterName";
-type HeaderType = React.ComponentProps<"input"> & { routerName: ReactNode; name: string };
+type HeaderType = React.ComponentProps<"input"> & { routerName: ReactNode; name: string | JSX.Element };
 
 export const Header = ({ routerName, name, ...props }: HeaderType) => {
   return (

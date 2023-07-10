@@ -4,7 +4,7 @@ import { LoadingModal } from "../../Global/LoadingModal/LoadingModal";
 import { Header } from "../../Layouts/Header/Header";
 import { SideBar } from "../../Layouts/SideBar/SideBar";
 
-export const TransactionHistory = () => {
+export const TransactionHistory: React.FC = () => {
   const { displayName } = useUser(state => (state.user as IUser) ?? {});
 
   return (

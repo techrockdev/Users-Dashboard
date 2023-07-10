@@ -6,20 +6,22 @@ import DialogTitle from "@mui/material/DialogTitle";
 import React from "react";
 
 interface WarningProps {
+  open?: boolean;
+  onClose?: () => void;
   onAgree: () => void;
   onDisagree: () => void;
 }
 
-export const Warning: React.FC<WarningProps> = ({ onAgree, onDisagree }) => {
+export const Warning: React.FC<WarningProps> = ({ open, onClose, onAgree, onDisagree }) => {
   return (
-    <Dialog open={true} onClose={onDisagree}>
-      <DialogTitle>Logout Confirmation</DialogTitle>
+    <Dialog open={true} onClose={onClose}>
+      <DialogTitle>Confirmation</DialogTitle>
       <DialogContent>
-        <p>Are you sure you want to log out?</p>
+        <p>Are you sure?</p>
       </DialogContent>
       <DialogActions>
         <Button onClick={onDisagree}>Cancel</Button>
-        <Button onClick={onAgree}>Logout</Button>
+        <Button onClick={onAgree}>Confirm</Button>
       </DialogActions>
     </Dialog>
   );

@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { UserDetail } from "./UserDetail/UserDetail";
 
-type RouterNameType = React.ComponentProps<"input"> & { routerName: ReactNode; name: string };
+type RouterNameType = React.ComponentProps<"input"> & { routerName: ReactNode; name: string | JSX.Element };
 
 export const RouterName = ({ routerName, name, ...props }: RouterNameType) => {
   return (

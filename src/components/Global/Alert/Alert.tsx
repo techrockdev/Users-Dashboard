@@ -3,9 +3,10 @@ import React, { ReactNode, useEffect, useState } from "react";
 
 interface AlertProps {
   children: ReactNode;
+  className?: string;
 }
 
-export const AlertError: React.FC<AlertProps> = ({ children }) => {
+export const AlertError: React.FC<AlertProps> = ({ children, className }) => {
   const [showAlert, setShowAlert] = useState(true);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ export const AlertError: React.FC<AlertProps> = ({ children }) => {
   }
 
   return (
-    <div>
+    <div className={className}>
       <Alert severity="error">{children}</Alert>
     </div>
   );
