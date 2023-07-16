@@ -18,5 +18,6 @@ root.render(
         </AuthContextProvider>
       </BrowserRouter>
     </QueryClientProvider>
+    {/* <ReactQueryDevtools initialIsOpen={false} /> */}
   </React.StrictMode>
 );

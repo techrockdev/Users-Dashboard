@@ -1,47 +1,12 @@
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useContext, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { SignUpFormInput, User } from "../../../base";
-import { auth } from "../../../config/firebase";
-import { AuthContext } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 import { AlertError } from "../../Global/Alert/Alert";
 import { Card } from "../../Global/Card/Card";
 import { MaxCard } from "../../Global/Card/MaxCard/MaxCard";
+import { useSignup } from "../../Global/hook/useSignup";
 import { LoadingModal } from "../../Global/LoadingModal/LoadingModal";
 
 export const SignUp: React.FC = () => {
-  const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignUpFormInput>();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const { dispatch } = useContext(AuthContext);
-
-  const onSubmit: SubmitHandler<SignUpFormInput> = async data => {
-    try {
-      setIsLoading(true);
-      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      const userId = userCredential.user.uid;
-      const user: User = {
-        id: userId,
-        name: data.name,
-        email: userCredential.user.email || "",
-        password: "",
-      };
-      if (auth.currentUser) {
-        await updateProfile(auth.currentUser, { displayName: data.name });
-        dispatch({ type: "LOGIN", payload: user });
-        navigate("/dashboard");
-      }
-    } catch (error: any) {
-      setIsError(error.message);
-      setIsLoading(false);
-    }
-  };
+  const { handleSubmit, onSubmit, register, isError, isLoading } = useSignup();
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-secondary">

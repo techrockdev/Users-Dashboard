@@ -3,6 +3,7 @@ import { MaxCard } from "../../Global/Card/MaxCard/MaxCard";
 import { LoadingModal } from "../../Global/LoadingModal/LoadingModal";
 import { Header } from "../../Layouts/Header/Header";
 import { SideBar } from "../../Layouts/SideBar/SideBar";
+import { Notifications } from "./Notifications";
 
 export const TransactionHistory: React.FC = () => {
   const { displayName } = useUser(state => (state.user as IUser) ?? {});
@@ -13,6 +14,7 @@ export const TransactionHistory: React.FC = () => {
       <div className="w-full overflow-y-scroll">
         <MaxCard>
           <Header routerName="Transaction History" name={displayName ?? <LoadingModal />} />
+          <Notifications />
         </MaxCard>
       </div>
     </div>

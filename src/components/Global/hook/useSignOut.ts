@@ -1,16 +1,29 @@
 import { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../../config/firebase";
 import { AuthContext } from "../../context/AuthContext";
 
 export const useSignOut = () => {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const anchorRef = useRef<HTMLButtonElement>(null);
   const { dispatch } = useContext(AuthContext);
   const [showWarning, setShowWarning] = useState(false);
+  const anchorRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
 
-  const handleToggle = () => {
-    setOpen(prevOpen => !prevOpen);
+  const handleLogOut = async () => {
+    setShowWarning(true);
+  };
+
+  const handleAgree = async () => {
+    setShowWarning(false);
+    dispatch({ type: "LOGOUT" });
+
+    try {
+      await auth.signOut();
+      navigate("/login");
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+    }
   };
 
   const handleClose = (event: Event | React.SyntheticEvent) => {
@@ -18,6 +31,14 @@ export const useSignOut = () => {
       return;
     }
     setOpen(false);
+  };
+
+  const handleToggle = () => {
+    setOpen(prevOpen => !prevOpen);
+  };
+
+  const handleDisagree = () => {
+    setShowWarning(false);
   };
 
   const handleListKeyDown = (event: React.KeyboardEvent) => {
@@ -29,28 +50,15 @@ export const useSignOut = () => {
     }
   };
 
-  const handleLogOut = () => {
-    setShowWarning(true);
-  };
-
-  const handleAgree = () => {
-    setShowWarning(false);
-    dispatch({ type: "LOGOUT" });
-    navigate("/login");
-  };
-
-  const handleDisagree = () => {
-    setShowWarning(false);
-  };
   return {
-    open,
     showWarning,
-    handleToggle,
-    handleListKeyDown,
-    handleClose,
     handleLogOut,
     handleAgree,
     handleDisagree,
+    handleClose,
+    handleListKeyDown,
+    open,
     anchorRef,
+    handleToggle,
   };
 };

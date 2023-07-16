@@ -8,7 +8,7 @@ interface AuthState {
 }
 
 const userString = localStorage.getItem("user");
-const initialUser = userString ? JSON.parse(userString) : null;
+export const initialUser = userString ? JSON.parse(userString) : null;
 
 const INITIAL_STATE: AuthState = {
   currentUser: initialUser,

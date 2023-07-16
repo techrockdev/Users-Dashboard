@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { BalanceContextProvider } from "./components/context/Balancecontext/BalanceContext";
 import { useAuth } from "./components/Global";
 import { Dashboard } from "./components/Pages/Dashboard/Dashboard";
 import { Login } from "./components/Pages/Login/Login";
@@ -19,7 +20,9 @@ const App = () => {
             path="/dashboard"
             element={
               <RequireAuth>
-                <Dashboard />
+                <BalanceContextProvider>
+                  <Dashboard />
+                </BalanceContextProvider>
               </RequireAuth>
             }
           />

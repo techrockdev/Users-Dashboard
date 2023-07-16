@@ -10,6 +10,10 @@ export interface IUser {
   photoUrl: string;
 }
 
+export interface Notification {
+  message: string;
+}
+
 export interface IUserStore {
   user: IUser | undefined;
   setUser: (user: IUserStore["user"]) => void;
@@ -32,6 +36,12 @@ export interface LoginFormInput {
   password: string;
 }
 
+export interface IFormInput {
+  cardNumber: number;
+  atmPin: number;
+  amount: number;
+}
+
 export interface SignUpFormInput {
   name: string;
   email: string;
@@ -52,4 +62,11 @@ export interface Transaction {
   amount: number;
   type: "add" | "withdraw";
   success: boolean;
+}
+
+export interface IBet {
+  id: string;
+  oddType: string;
+  oddValue: string;
+  teamPlace: string;
 }

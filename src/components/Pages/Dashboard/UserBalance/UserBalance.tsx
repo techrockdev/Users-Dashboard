@@ -1,55 +1,44 @@
-import { AiFillEye, AiOutlinePlus } from "react-icons/ai";
-import { AlertError } from "../../../Global/Alert/Alert";
+import { useContext } from "react";
+import { AiFillEye, AiFillEyeInvisible, AiOutlinePlus } from "react-icons/ai";
+import { BalanceContext } from "../../../context/Balancecontext/BalanceContext";
 import { Card } from "../../../Global/Card/Card";
 import { MaxCard } from "../../../Global/Card/MaxCard/MaxCard";
-import { useFetchBalance } from "../../../Global/hook/useFetchBalance";
-import { InputModal } from "../../../Global/InputModal/InputModal";
-import { UserBalanceProps } from "./module.interface";
+import { useHandleBalance } from "../../../Global/hook/useHandleBalance";
+import { ModalForBalanceInput } from "./ModalForBalanceInput";
 
-export const UserBalance: React.FC<UserBalanceProps> = ({ userId }) => {
-  const {
-    balance,
-    balanceVisible,
-    handleCloseModal,
-    handleConfirmModal,
-    handleInputChange,
-    handleOpenModal,
-    inputAmount,
-    notification,
-    showConfirmation,
-    toggleBalanceVisibility,
-  } = useFetchBalance(userId);
+export const UserBalance = () => {
+  const balanceContext = useContext(BalanceContext);
+  const { handleCloseModal, handleSuccess, handleToggleBalance, isModalOpen, handleAddMoney, isBalanceVisible } =
+    useHandleBalance();
 
   return (
     <MaxCard>
       <Card className="flex flex-col items-center justify-center p-8">
         <div className="mb-4 flex items-center">
-          <h1 className="mr-4 text-3xl font-bold"> ₦ {balanceVisible ? balance + ".00" : "**"}</h1>
-          <AiFillEye className="cursor-pointer text-gray-500" size={24} onClick={toggleBalanceVisibility} />
+          {isBalanceVisible ? (
+            <h1 className="mr-4 text-3xl font-bold">₦ {balanceContext.balance}.00</h1>
+          ) : (
+            <h1 className="mr-4 text-3xl font-bold">₦ **</h1>
+          )}
+          {isBalanceVisible ? (
+            <AiFillEye className="cursor-pointer text-gray-500" size={24} onClick={handleToggleBalance} />
+          ) : (
+            <AiFillEyeInvisible className="cursor-pointer text-gray-500" size={24} onClick={handleToggleBalance} />
+          )}
         </div>
-
         <div className="flex w-full items-center justify-center space-x-4 font-bold">
           <div>
             <div
+              onClick={handleAddMoney}
               className="m-auto flex h-[50px] w-[50px] cursor-pointer items-center justify-center rounded-full bg-secondary"
-              onClick={handleOpenModal}
             >
-              <AiOutlinePlus className=" text-2xl text-white" />
+              <AiOutlinePlus className="text-2xl text-white" />
             </div>
             <h4>Add Money</h4>
           </div>
         </div>
+        {isModalOpen && <ModalForBalanceInput onClose={handleCloseModal} />}
       </Card>
-
-      <InputModal
-        open={showConfirmation}
-        handleClose={handleCloseModal}
-        handleConfirm={handleConfirmModal}
-        inputAmount={inputAmount}
-        handleInputChange={handleInputChange}
-      />
-
-      {notification ? <AlertError className="mt-5">{notification}</AlertError> : ""}
     </MaxCard>
   );
 };
