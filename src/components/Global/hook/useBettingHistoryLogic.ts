@@ -35,7 +35,11 @@ export const useBettingHistoryLogic = () => {
     }
     setNewBalance(newBalance);
     await post("userbalance", { amount: newBalance });
-    await post("placedbetamount", { amountPlacedOnBet: Number(betBetAmoutInput) });
+    // await post("placedbetamount", { amountPlacedOnBet: Number(betBetAmoutInput) });
+    await post("placedbetamount", {
+      amountPlacedOnBet: Number(betBetAmoutInput),
+      teamPlace: selectedBet,
+    });
     await post("transactionHistory", {
       deposit: `You Just placed a bet of ${Number(betBetAmoutInput)} at ${date}. and your balance now is ${newBalance}`,
     });
