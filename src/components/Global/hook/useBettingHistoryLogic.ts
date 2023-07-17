@@ -6,6 +6,7 @@ import { usePost } from "./usePost";
 export const useBettingHistoryLogic = () => {
   const [showInput, setShowInput] = useState(false);
   const [selectedBet, setSelectedBet] = useState(null);
+
   const [playButtonText, setPlayButtonText] = useState("Play");
   const [betBetAmoutInput, setBetAmountInput] = useState<number>(0);
   const [newBalance, setNewBalance] = useState(0);

@@ -22,10 +22,10 @@ export const usePost = () => {
     }
   };
 
-  const del = async (url: string) => {
+  const del = async (id: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.delete(`${API}/${url}/${uid.id}.json`);
+      const response = await axios.delete(`${API}/addedbet/${uid}/${id}`);
       setData(response);
       setOnSuccess(true);
     } catch (err) {
