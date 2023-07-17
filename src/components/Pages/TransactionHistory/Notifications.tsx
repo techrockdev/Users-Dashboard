@@ -5,14 +5,17 @@ import { LoadingModal } from "../../Global/LoadingModal/LoadingModal";
 
 export const Notifications = () => {
   const { data, isLoading, isSuccess } = useGetWithId("transactionHistory");
+  const rows = data?.data ? Object.values(data.data) : [];
 
   if (isLoading) {
     return <LoadingModal />;
   }
 
-  if (isSuccess) {
-    const rows = data?.data ? Object.values(data.data) : [];
+  if (rows.length === 0) {
+    return <h1 className="p-4 text-center text-xl ">No Transaction History. </h1>;
+  }
 
+  if (isSuccess) {
     return (
       <div className="sm:mt-20 md:mt-0">
         {rows.map((transaction: any) => (
@@ -28,6 +31,5 @@ export const Notifications = () => {
       </div>
     );
   }
-
   return <div>Error occurred while fetching data.</div>;
 };

@@ -9,8 +9,10 @@ export const useAuth = () => {
   const setUser = useUser(state => state.setUser);
   const { currentUser } = useContext(AuthContext);
 
+  const isUserLoggedIn = !!localStorage.getItem("loggedIn");
+
   const RequireAuth = ({ children }: { children: any }) => {
-    return currentUser ? children : <Navigate to="/login" />;
+    return currentUser || isUserLoggedIn ? children : <Navigate to="/login" />;
   };
 
   const authUser = useEffect(() => {
@@ -31,6 +33,7 @@ export const useAuth = () => {
           photoUrl: reloadUserInfo.photoUrl,
         };
 
+        localStorage.setItem("loggedIn", "true");
         setUser(user);
       }
     });
