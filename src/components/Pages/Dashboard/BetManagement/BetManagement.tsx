@@ -5,7 +5,7 @@ import { BetTableBody } from "./BetTableData/BetTableBody";
 export const BetManagement = () => {
   return (
     <div>
-      <Card className="p-0 py-2">
+      <Card className="p-0 py-2 ">
         <TextWrap className="text-sm capitalize">football matches</TextWrap>
         <BetTableBody />
       </Card>

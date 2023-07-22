@@ -1,3 +1,5 @@
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -10,10 +12,11 @@ import { Button } from "../../../../Global/Button/Button";
 import { useBetTableData } from "../../../../Global/hook/useBetTableData";
 import { useFetchPlacedBet } from "../../../../Global/hook/useFetchPlacedBet";
 import { useGet } from "../../../../Global/hook/useGet";
+import { usePagination } from "../../../../Global/hook/usePagination";
 import { Message } from "../../../../Global/Message/Message";
 import { TableSkeleton } from "../../../../Global/TableSkeleton/TableSkeleton";
 
-const StyledTableCell: any = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     color: "white",
   },
@@ -26,7 +29,6 @@ const StyledTablebetdata = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
@@ -36,6 +38,8 @@ export const BetTableBody = () => {
   const { data, isLoading, error } = useGet("predictbet");
   const { handleOddButtonClick, rows, showMessage } = useBetTableData();
   const { betData: placedBets = [] } = useFetchPlacedBet();
+  const { currentPage, handleNextClick, handlePreviousClick, totalPages, offset, rowsPerPage, totalRows } =
+    usePagination();
 
   const isAddedToBet = (rId: string, oddType: string) => {
     return placedBets.some(bet => bet.rId === rId && bet.oddType === oddType);
@@ -53,7 +57,7 @@ export const BetTableBody = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((betdata: any) => (
+          {rows.slice(offset, offset + rowsPerPage).map(betdata => (
             <StyledTablebetdata key={betdata.id}>
               <StyledTableCell component="th" scope="betdata">
                 {betdata.team1} vs {betdata.team2}
@@ -91,6 +95,21 @@ export const BetTableBody = () => {
           ))}
         </TableBody>
       </Table>
+      <div className="mt-4 flex items-center justify-center">
+        <button className="rounded bg-secondary p-1 text-white" onClick={handlePreviousClick} disabled={offset === 0}>
+          <NavigateBeforeIcon />
+        </button>
+        <h1 className="p-4 font-bold">
+          {currentPage} of {totalPages}
+        </h1>
+        <button
+          className="rounded bg-secondary p-1 text-white"
+          onClick={handleNextClick}
+          disabled={offset + rowsPerPage >= totalRows}
+        >
+          <NavigateNextIcon />
+        </button>
+      </div>
       {isLoading && (
         <TableContainer component={Paper}>
           <TableSkeleton />

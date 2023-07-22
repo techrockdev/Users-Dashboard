@@ -18,7 +18,7 @@ export const UserBalance = () => {
           {isBalanceVisible ? (
             <h1 className="mr-4 text-3xl font-bold">$ {balanceContext.balance.toLocaleString()}.00</h1>
           ) : (
-            <h1 className="mr-4 text-3xl font-bold">₦ **</h1>
+            <h1 className="mr-4 text-3xl font-bold">$ ***</h1>
           )}
           {isBalanceVisible ? (
             <AiFillEye className="cursor-pointer text-gray-500" size={24} onClick={handleToggleBalance} />
