@@ -2,24 +2,37 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Accordion, AccordionDetails, AccordionSummary, IconButton, Tooltip, Typography } from "@mui/material";
 import { IBet } from "../../../../base";
-import { AlertError } from "../../../Global/Alert/Alert";
-import { Button } from "../../../Global/Button/Button";
 import { useBettingHistoryLogic } from "../../../Global/hook/useBettingHistoryLogic";
 import { useDeletedBet } from "../../../Global/hook/useDeletedBet";
 import { useFetchPlacedBet } from "../../../Global/hook/useFetchPlacedBet";
 import { Input } from "../../../Global/Input/Input";
+import { LoadingModal } from "../../../Global/LoadingModal/LoadingModal";
+import { Message } from "../../../Global/Message/Message";
 import { TableSkeleton } from "../../../Global/TableSkeleton/TableSkeleton";
 import { Warning } from "../../../Global/Warning/Warning";
 
 export const BettingHistory = () => {
-  const { handlePlayClick, handleBetAmout, handleCancelPlay, showInput, hanldePaymentForBet, error } =
-    useBettingHistoryLogic();
-  const { handleDeleteBet, handleDeleteConfirmation, openModal, setOpenModal, delBet } = useDeletedBet();
+  const {
+    handlePlayClick,
+    handleBetAmout,
+    handleCancelPlay,
+    showInput,
+    hanldePaymentForBet,
+    error,
+    showMessageNotifaction,
+    setShowMessageNotifaction,
+    betBetAmoutInput,
+    isLoading: loading,
+  } = useBettingHistoryLogic();
+  const {
+    handleDeleteBet,
+    handleDeleteConfirmation,
+    openModal,
+    setOpenModal,
+    showMessage,
+    loading: load,
+  } = useDeletedBet();
   const { betData, isLoading } = useFetchPlacedBet();
-
-  if (isLoading) {
-    return <TableSkeleton />;
-  }
 
   if (betData.length === 0) {
     return (
@@ -28,6 +41,13 @@ export const BettingHistory = () => {
       </div>
     );
   }
+
+  const handleDeleteBetAndPayment = (betId: string) => {
+    hanldePaymentForBet();
+    setShowMessageNotifaction(false);
+    handleDeleteBet(betId);
+  };
+
   return (
     <div>
       {betData.map((bet: IBet) => (
@@ -50,22 +70,37 @@ export const BettingHistory = () => {
             {showInput ? (
               <div className="mt-6 flex">
                 <Input type="text" placeholder="input amout" onChange={handleBetAmout} className="text-red-500" />
-                <Button onClick={hanldePaymentForBet}>Pay</Button>
+                <input
+                  value={loading ? "Confirm" : "Pay"}
+                  className={`${
+                    loading ? "animate-pulse cursor-wait" : ""
+                  } cursor-pointer rounded border-none bg-accent p-2 font-bold text-white outline-none`}
+                  type="button"
+                  onClick={() => handleDeleteBetAndPayment(bet.id)}
+                />
               </div>
             ) : (
               ""
             )}
-            {error ? <AlertError>Insufficient Funds</AlertError> : false}
-            {delBet ? <AlertError>{delBet}</AlertError> : false}
-            {}
+
             {showInput ? (
-              <Button className="mt-4 w-full" onClick={handleCancelPlay}>
-                Cancel Play
-              </Button>
+              <input
+                type="button"
+                value={loading ? "Confirm" : "Cancel Play"}
+                onClick={handleCancelPlay}
+                className={`${
+                  loading ? "animate-pulse cursor-wait" : ""
+                } mt-4 w-full cursor-pointer rounded border-none bg-accent p-2 font-bold text-white outline-none`}
+              />
             ) : (
-              <Button className="mt-4 w-full" onClick={() => handlePlayClick(bet)}>
-                Play
-              </Button>
+              <input
+                type="button"
+                value={loading ? "loading..." : "Play"}
+                onClick={() => handlePlayClick(bet)}
+                className={`${
+                  loading ? "animate-pulse cursor-wait" : ""
+                } mt-4 w-full cursor-pointer rounded border-none bg-accent p-2 font-bold text-white outline-none`}
+              />
             )}
           </AccordionDetails>
         </Accordion>
@@ -76,6 +111,17 @@ export const BettingHistory = () => {
           onClose={() => setOpenModal(false)}
           onAgree={handleDeleteConfirmation}
           onDisagree={() => setOpenModal(false)}
+        />
+      )}
+      {loading && <LoadingModal />}
+      {isLoading && <TableSkeleton />}
+      {error && <Message className="rounded-xl bg-red-500 p-4 text-white" message="Insufficient Fund" />}
+      {showMessage && <Message className="rounded-xl bg-secondary p-4 text-white" message="Bet Deleted Successfully" />}
+      {load && <LoadingModal />}
+      {showMessageNotifaction && (
+        <Message
+          className="rounded-xl bg-secondary p-4 text-white"
+          message={`Success Placed a bet with amount of $ ${betBetAmoutInput}`}
         />
       )}
     </div>

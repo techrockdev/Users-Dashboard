@@ -5,6 +5,8 @@ import { usePost } from "./usePost";
 
 export const useUpdateBalance = () => {
   const [newBalance, setNewBalance] = useState<number>(0);
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { post, isLoading, data, onSuccess } = usePost();
   const queryClient = useQueryClient();
   const balanceContext = useContext(BalanceContext);
@@ -16,9 +18,9 @@ export const useUpdateBalance = () => {
     setNewBalance(newBalance);
     await post("userbalance", { amount: newBalance });
     await post("transactionHistory", {
-      deposit: `You Just Topup of ${Number(
+      deposit: `You Just Topup of $${Number(
         formData.amount
-      )} in your account at ${date}. and your balance now is ${newBalance}`,
+      ).toLocaleString()} in your account at ${date}. and your balance now is $${newBalance.toLocaleString()}`,
     });
     queryClient.invalidateQueries("addedbet");
   };
@@ -27,7 +29,19 @@ export const useUpdateBalance = () => {
     if (data && onSuccess) {
       balanceContext.updateBalance(newBalance);
     }
+
+    if (onSuccess) {
+      setSuccess(true);
+      setLoading(false);
+      setTimeout(() => {
+        setSuccess(false);
+      }, 1000);
+    }
+
+    if (isLoading) {
+      setLoading(isLoading);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
-  return { handleUpdateBalance, isLoading, onSuccess };
+  }, [data, newBalance, isLoading, onSuccess]);
+  return { handleUpdateBalance, loading, newBalance, success };
 };

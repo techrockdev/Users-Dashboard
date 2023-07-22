@@ -25,7 +25,7 @@ export const usePost = () => {
   const del = async (id: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.delete(`${API}/addedbet/${uid}/${id}`);
+      const response = await axios.delete(`${API}/addedbet/${uid.id}/${id}.json`);
       setData(response);
       setOnSuccess(true);
     } catch (err) {

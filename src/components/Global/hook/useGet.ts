@@ -8,9 +8,9 @@ const fetchData = async (url: string): Promise<AxiosResponse<any>> => {
 
 export const useGet = <TData = any, TError = any>(
   url: string,
-  options?: UseQueryOptions<AxiosResponse<TData[]>, TError>
+  options?: UseQueryOptions<AxiosResponse<TData>, TError>
 ) => {
-  const { data, error, isLoading } = useQuery<AxiosResponse<TData[]>, TError>(url, () => fetchData(url), options);
+  const { data, error, isLoading } = useQuery<AxiosResponse<TData>, TError>(url, () => fetchData(url), options);
 
   return { data: data?.data, error, isLoading };
 };

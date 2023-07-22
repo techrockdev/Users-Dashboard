@@ -17,7 +17,7 @@ interface WarningProps {
 
 export const Warning: React.FC<WarningProps> = ({ open, onClose, onAgree, onDisagree }) => {
   return (
-    <MaxCard>
+    <MaxCard className="absolute">
       <Card>
         <Box
           sx={{

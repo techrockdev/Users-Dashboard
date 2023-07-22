@@ -69,4 +69,5 @@ export interface IBet {
   oddType: string;
   oddValue: string;
   teamPlace: string;
+  rId: string;
 }

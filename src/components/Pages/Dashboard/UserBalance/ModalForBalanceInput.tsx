@@ -4,7 +4,9 @@ import Typography from "@mui/material/Typography";
 import { AiOutlineClose } from "react-icons/ai";
 import { ModalForm } from "./ModalForm";
 
-export const ModalForBalanceInput = ({ onClose }: { onClose: any }) => {
+type ModalCloseHandler = () => void;
+
+export const ModalForBalanceInput = ({ onClose }: { onClose: ModalCloseHandler }) => {
   return (
     <Box
       sx={{
@@ -52,7 +54,7 @@ export const ModalForBalanceInput = ({ onClose }: { onClose: any }) => {
             Add Money
           </Typography>
 
-          <ModalForm />
+          <ModalForm onClose={onClose} />
         </Box>
       </Modal>
     </Box>

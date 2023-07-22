@@ -1,18 +1,28 @@
 import { useForm } from "react-hook-form";
 import { AlertError } from "../../../Global/Alert/Alert";
 import { useUpdateBalance } from "../../../Global/hook/useUpdatBalance";
+import { LoadingModal } from "../../../Global/LoadingModal/LoadingModal";
+import { Message } from "../../../Global/Message/Message";
 
-export const ModalForm = () => {
+type ModalCloseHandler = () => void;
+export const ModalForm = ({ onClose }: { onClose: ModalCloseHandler }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const { handleUpdateBalance, isLoading } = useUpdateBalance();
+  const { handleUpdateBalance, loading, success, newBalance } = useUpdateBalance();
+
+  const onSubmit = async (formData: any) => {
+    await handleUpdateBalance(formData);
+    onClose();
+  };
 
   return (
-    <form onSubmit={handleSubmit(handleUpdateBalance)} className="space-y-6 ">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 ">
+      {loading && <LoadingModal />}
+
       <div>
         <label htmlFor="cardNumber" className="text-gray-700">
           Card Number:
@@ -65,11 +75,18 @@ export const ModalForm = () => {
       {errors.amount && <AlertError>Please enter your amount</AlertError>}
       <input
         type="submit"
-        value={`${isLoading ? "loading..." : "Submit"}`}
+        value={`${loading ? "loading..." : "Submit"}`}
         className={`${
-          isLoading ? "cursor-wait" : "cursor-pointer"
+          loading ? "animate-pulse cursor-wait" : "cursor-pointer"
         } w-full cursor-pointer rounded border-none  bg-accent p-2 font-bold text-white outline-none`}
       />
+
+      {success && (
+        <Message
+          className="rounded-xl bg-secondary p-4 text-white"
+          message={`Successfully funded your account. you now have $${newBalance} in your account`}
+        />
+      )}
     </form>
   );
 };

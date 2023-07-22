@@ -7,8 +7,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { Button } from "../../../../Global/Button/Button";
-import { useAddBet } from "../../../../Global/hook/useAddBet";
+import { useBetTableData } from "../../../../Global/hook/useBetTableData";
+import { useFetchPlacedBet } from "../../../../Global/hook/useFetchPlacedBet";
 import { useGet } from "../../../../Global/hook/useGet";
+import { Message } from "../../../../Global/Message/Message";
 import { TableSkeleton } from "../../../../Global/TableSkeleton/TableSkeleton";
 
 const StyledTableCell: any = styled(TableCell)(({ theme }) => ({
@@ -20,7 +22,7 @@ const StyledTableCell: any = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+const StyledTablebetdata = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
@@ -32,24 +34,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export const BetTableBody = () => {
   const { data, isLoading, error } = useGet("predictbet");
-  const { addBet } = useAddBet();
+  const { handleOddButtonClick, rows, showMessage } = useBetTableData();
+  const { betData: placedBets = [] } = useFetchPlacedBet();
 
-  if (isLoading) {
-    return (
-      <TableContainer component={Paper}>
-        <TableSkeleton />
-      </TableContainer>
-    );
-  }
-
-  if (error) {
-    return <p>Error: {error.message}</p>;
-  }
-
-  const rows = data ? Object.values(data) : [];
-
-  const handleOddButtonClick = (oddType: string, oddValue: string, teamPlace: string) => {
-    addBet(oddType, oddValue, teamPlace);
+  const isAddedToBet = (rId: string, oddType: string) => {
+    return placedBets.some(bet => bet.rId === rId && bet.oddType === oddType);
   };
 
   return (
@@ -64,40 +53,53 @@ export const BetTableBody = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows &&
-            rows.map((row: any, index: number) => (
-              <StyledTableRow key={index}>
-                <StyledTableCell component="th" scope="row">
-                  {row.team1} vs {row.team2}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  <Button
-                    className="w-20  hover:bg-red-500"
-                    onClick={() => handleOddButtonClick("home", row.odd1, row.team1)}
-                  >
-                    {row.odd1}
-                  </Button>
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  <Button
-                    className="w-20  hover:bg-red-500"
-                    onClick={() => handleOddButtonClick("draw", row.oddx, `${row.team1} vs ${row.team2}`)}
-                  >
-                    {row.oddx}
-                  </Button>
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  <Button
-                    className="w-20  hover:bg-red-500"
-                    onClick={() => handleOddButtonClick("away", row.odd2, row.team2)}
-                  >
-                    {row.odd2}
-                  </Button>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
+          {rows.map((betdata: any) => (
+            <StyledTablebetdata key={betdata.id}>
+              <StyledTableCell component="th" scope="betdata">
+                {betdata.team1} vs {betdata.team2}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <Button
+                  className={`w-20 ${isAddedToBet(betdata.r_id, "home") ? " bg-red-500" : ""}`}
+                  onClick={() => handleOddButtonClick("home", betdata.odd1, betdata.team1, betdata.r_id)}
+                  disabled={isAddedToBet(betdata.r_id, "home")}
+                >
+                  {betdata.odd1}
+                </Button>
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <Button
+                  className={`w-20 ${isAddedToBet(betdata.r_id, "draw") ? " bg-red-500" : ""}`}
+                  onClick={() =>
+                    handleOddButtonClick("draw", betdata.oddx, `${betdata.team1} vs ${betdata.team2}`, betdata.r_id)
+                  }
+                  disabled={isAddedToBet(betdata.r_id, "draw")}
+                >
+                  {betdata.oddx}
+                </Button>
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <Button
+                  className={`w-20 ${isAddedToBet(betdata.r_id, "away") ? " bg-red-500" : ""}`}
+                  onClick={() => handleOddButtonClick("away", betdata.odd2, betdata.team2, betdata.r_id)}
+                  disabled={isAddedToBet(betdata.r_id, "away")}
+                >
+                  {betdata.odd2}
+                </Button>
+              </StyledTableCell>
+            </StyledTablebetdata>
+          ))}
         </TableBody>
       </Table>
+      {isLoading && (
+        <TableContainer component={Paper}>
+          <TableSkeleton />
+        </TableContainer>
+      )}
+      {error && <p>{`Error: ${error.message}`}</p>}
+      {showMessage && (
+        <Message className="rounded-xl bg-secondary p-4 text-white" message="Bet Added To Your Favourite" />
+      )}
     </TableContainer>
   );
 };

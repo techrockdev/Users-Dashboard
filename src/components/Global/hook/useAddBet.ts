@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useQueryClient } from "react-query";
 import { usePost } from "./usePost";
 
@@ -5,11 +6,12 @@ export const useAddBet = () => {
   const { post } = usePost();
   const queryClient = useQueryClient();
 
-  const addBet = async (oddType: string, oddValue: string, teamPlace: string) => {
+  const addBet = async (oddType: string, oddValue: string, teamPlace: string, rId: string) => {
     const payload = {
       oddType,
       oddValue,
       teamPlace,
+      rId,
     };
 
     try {

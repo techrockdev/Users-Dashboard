@@ -30,7 +30,7 @@ export const Login: React.FC = () => {
             type="submit"
             disabled={isLoading}
             className={`${
-              isLoading ? "cursor-wait" : "cursor-pointer"
+              isLoading ? "animate-pulse cursor-wait" : "cursor-pointer"
             } mt-4 cursor-pointer rounded-lg bg-secondary p-2 font-bold text-white outline-none`}
             value={isLoading ? "Loading..." : "Log In"}
           />
@@ -42,6 +42,7 @@ export const Login: React.FC = () => {
           </div>
         </form>
       </Card>
+      {isLoading && <LoadingModal />}
     </div>
   );
 };

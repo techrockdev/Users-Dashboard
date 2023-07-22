@@ -16,7 +16,7 @@ export const UserBalance = () => {
       <Card className="flex flex-col items-center justify-center p-8">
         <div className="mb-4 flex items-center">
           {isBalanceVisible ? (
-            <h1 className="mr-4 text-3xl font-bold">₦ {balanceContext.balance}.00</h1>
+            <h1 className="mr-4 text-3xl font-bold">$ {balanceContext.balance.toLocaleString()}.00</h1>
           ) : (
             <h1 className="mr-4 text-3xl font-bold">₦ **</h1>
           )}

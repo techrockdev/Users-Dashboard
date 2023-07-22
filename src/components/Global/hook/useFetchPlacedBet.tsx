@@ -15,6 +15,7 @@ export const useFetchPlacedBet = () => {
         oddType: rows[key].oddType,
         oddValue: rows[key].oddValue,
         teamPlace: rows[key].teamPlace,
+        rId: rows[key].rId,
       });
     }
     setBetData(loadedTransactions);
