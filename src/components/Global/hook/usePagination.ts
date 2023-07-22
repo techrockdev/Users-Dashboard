@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useBetTableData } from "./useBetTableData";
 
 export const usePagination = () => {
-  const [offset, setOffset] = useState(0);
+  const [offset, setOffset] = useState(5);
   const { rows } = useBetTableData();
   const rowsPerPage = 5;
   const totalRows = rows.length;
