@@ -38,19 +38,13 @@ export const useDeletedBet = () => {
       setDelBet(`Error: ${error}`);
     }
   };
-  const handleDeleteBet = async (betId: string) => {
-    setSelectedBetId(betId);
-    setOpenModal(true);
-  };
 
-  const handleDeleteConfirmation = () => {
-    deleteBet(selectedBetId);
-    setOpenModal(false);
+  const handleDeleteBet = async (betId: string) => {
+    deleteBet(betId);
   };
 
   return {
     handleDeleteBet,
-    handleDeleteConfirmation,
     openModal,
     setOpenModal,
     delBet,

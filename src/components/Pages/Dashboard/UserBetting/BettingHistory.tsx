@@ -24,14 +24,9 @@ export const BettingHistory = () => {
     betBetAmoutInput,
     isLoading: loading,
   } = useBettingHistoryLogic();
-  const {
-    handleDeleteBet,
-    handleDeleteConfirmation,
-    openModal,
-    setOpenModal,
-    showMessage,
-    loading: load,
-  } = useDeletedBet();
+
+  const { handleDeleteBet, openModal, setOpenModal, showMessage, loading: load } = useDeletedBet();
+
   const { betData, isLoading } = useFetchPlacedBet();
 
   if (betData.length === 0) {
@@ -71,7 +66,7 @@ export const BettingHistory = () => {
               <div className="mt-6 flex">
                 <Input type="text" placeholder="input amout" onChange={handleBetAmout} className="text-red-500" />
                 <input
-                  value={loading ? "Confirm" : "Pay"}
+                  value={loading ? "Loading.." : "Pay"}
                   className={`${
                     loading ? "animate-pulse cursor-wait" : ""
                   } cursor-pointer rounded border-none bg-accent p-2 font-bold text-white outline-none`}
@@ -86,7 +81,7 @@ export const BettingHistory = () => {
             {showInput ? (
               <input
                 type="button"
-                value={loading ? "Confirm" : "Cancel Play"}
+                value={loading ? "Loading..." : "Cancel Play"}
                 onClick={handleCancelPlay}
                 className={`${
                   loading ? "animate-pulse cursor-wait" : ""
@@ -109,7 +104,9 @@ export const BettingHistory = () => {
         <Warning
           open={openModal}
           onClose={() => setOpenModal(false)}
-          onAgree={handleDeleteConfirmation}
+          onAgree={() => {
+            setOpenModal(false); // Remove handleDeleteConfirmation call
+          }}
           onDisagree={() => setOpenModal(false)}
         />
       )}
