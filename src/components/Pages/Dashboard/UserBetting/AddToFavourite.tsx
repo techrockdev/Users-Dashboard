@@ -66,7 +66,12 @@ export const AddToFavourite = () => {
             </Typography>
             {showInput ? (
               <div className="mt-6 flex">
-                <Input type="text" placeholder="input amout" onChange={handleBetAmout} className="text-red-500" />
+                <Input
+                  type="number"
+                  placeholder="input amount"
+                  onChange={handleBetAmout}
+                  className="text-red-500 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                />
                 <input
                   value={loading ? "Loading.." : "Pay"}
                   className={`${
