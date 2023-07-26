@@ -1,7 +1,9 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Accordion, AccordionDetails, AccordionSummary, IconButton, Tooltip, Typography } from "@mui/material";
+import { useContext } from "react";
 import { IBet } from "../../../../base";
+import { BalanceContext } from "../../../context/Balancecontext/BalanceContext";
 import { useBettingHistoryLogic } from "../../../Global/hook/useBettingHistoryLogic";
 import { useDeletedBet } from "../../../Global/hook/useDeletedBet";
 import { useFetchPlacedBet } from "../../../Global/hook/useFetchPlacedBet";
@@ -11,7 +13,7 @@ import { Message } from "../../../Global/Message/Message";
 import { TableSkeleton } from "../../../Global/TableSkeleton/TableSkeleton";
 import { Warning } from "../../../Global/Warning/Warning";
 
-export const BettingHistory = () => {
+export const AddToFavourite = () => {
   const {
     handlePlayClick,
     handleBetAmout,
@@ -25,11 +27,12 @@ export const BettingHistory = () => {
     isLoading: loading,
   } = useBettingHistoryLogic();
 
-  const { handleDeleteBet, openModal, setOpenModal, showMessage, loading: load } = useDeletedBet();
+  const { handleDeleteBet, openModal, setOpenModal, showMessage, loading: load, deletedBetIds } = useDeletedBet();
 
   const { betData, isLoading } = useFetchPlacedBet();
+  const balanceContext = useContext(BalanceContext);
 
-  if (betData.length === 0) {
+  if (betData.length === 0 || betData.every((bet: any) => deletedBetIds.includes(bet.id))) {
     return (
       <div className="text-center">
         <p>Your betslip is empty. Please make one or more selections in order to place a bet.</p>
@@ -37,16 +40,15 @@ export const BettingHistory = () => {
     );
   }
 
-  const handleDeleteBetAndPayment = (betId: string) => {
-    hanldePaymentForBet();
+  const handleDeleteBetAndPayment = async (betId: string) => {
+    hanldePaymentForBet(betId);
     setShowMessageNotifaction(false);
-    handleDeleteBet(betId);
   };
 
   return (
     <div>
       {betData.map((bet: IBet) => (
-        <Accordion key={bet.id}>
+        <Accordion key={bet.id} className={deletedBetIds.includes(bet.id) ? "hidden" : ""}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
             <Typography>
               <h1>{bet.teamPlace}</h1>

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
 import { IBet } from "../../../base";
 import { useGetWithId } from "./useGetWithId";
 
 export const useFetchPlacedBet = () => {
   const [betData, setBetData] = useState<IBet[]>([]);
   const { data, isLoading } = useGetWithId<{ [key: string]: IBet }>("addedbet");
+  const queryClient = useQueryClient();
 
   const rows: any = data?.data;
   const loadedTransactions: any = [];
@@ -19,6 +21,7 @@ export const useFetchPlacedBet = () => {
       });
     }
     setBetData(loadedTransactions);
+    queryClient.invalidateQueries("addedbet");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 

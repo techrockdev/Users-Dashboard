@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "../../../Global/Card/Card";
 import { MaxCard } from "../../../Global/Card/MaxCard/MaxCard";
-import { BettingHistory } from "./BettingHistory";
+import { AddToFavourite } from "./AddToFavourite";
 
 export const UserBetting: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ export const UserBetting: React.FC = () => {
       <Card>
         <h1 className="p-4 text-2xl font-bold">Favourites</h1>
         <MaxCard>
-          <BettingHistory />
+          <AddToFavourite />
         </MaxCard>
       </Card>
     </div>

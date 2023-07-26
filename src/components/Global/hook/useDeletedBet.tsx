@@ -1,17 +1,30 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
-import { IBet } from "../../../base";
+import { IBet, UseDeletedBetProps } from "../../../base";
 import { usePost } from "./usePost";
 
-export const useDeletedBet = () => {
+const LOCAL_STORAGE_KEY = "addedbet";
+
+export const useDeletedBet = (): UseDeletedBetProps => {
   const [openModal, setOpenModal] = useState(false);
-  const [selectedBetId, setSelectedBetId] = useState("");
+  const [deletedBetIds, setDeletedBetIds] = useState<string[]>(() => {
+    // Initialize the deletedBetIds state from local storage if available
+    const storedDeletedBetIds = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return storedDeletedBetIds ? JSON.parse(storedDeletedBetIds) : [];
+  });
+  const [deletedBets, setDeletedBets] = useState<string[]>([]);
+  // const [deletedBetIds, setDeletedBetIds] = useState<string[]>([]);
   const [betData, setBetData] = useState<IBet[]>([]);
   const [delBet, setDelBet] = useState("");
   const [showMessage, setShowMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const { del, isLoading, onSuccess, data } = usePost();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // Store the updated deletedBetIds in local storage whenever it changes
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(deletedBetIds));
+  }, [deletedBetIds]);
 
   useEffect(() => {
     if (onSuccess) {
@@ -29,6 +42,8 @@ export const useDeletedBet = () => {
   }, [onSuccess, isLoading]);
 
   const deleteBet = async (betId: string) => {
+    setDeletedBetIds(prevDeletedBetIds => [...prevDeletedBetIds, betId]);
+
     try {
       await del(betId);
       setBetData(prevBetData => prevBetData.filter(bet => bet.id !== betId));
@@ -43,6 +58,11 @@ export const useDeletedBet = () => {
     deleteBet(betId);
   };
 
+  const handleLocalDeleteBet = (betId: string) => {
+    // Perform local deletion by updating the deletedBetIds state
+    setDeletedBetIds(prevDeletedBetIds => [...prevDeletedBetIds, betId]);
+  };
+
   return {
     handleDeleteBet,
     openModal,
@@ -52,5 +72,7 @@ export const useDeletedBet = () => {
     setShowMessage,
     loading,
     onSuccess,
+    handleLocalDeleteBet,
+    deletedBetIds,
   };
 };

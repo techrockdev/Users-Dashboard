@@ -6,6 +6,7 @@ export const useBetTableData = () => {
   const { data = {} } = useGet("predictbet");
   const { addBet } = useAddBet();
   const dataIds = Object.keys(data ?? {});
+
   const rows = dataIds.map(id => {
     const bet = data[id];
     bet.r_id = id;

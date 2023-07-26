@@ -71,3 +71,16 @@ export interface IBet {
   teamPlace: string;
   rId: string;
 }
+
+export interface UseDeletedBetProps {
+  handleDeleteBet: (betId: string) => void;
+  openModal: boolean;
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  delBet: string;
+  showMessage: boolean;
+  setShowMessage: React.Dispatch<React.SetStateAction<boolean>>;
+  loading: boolean;
+  onSuccess: boolean;
+  deletedBetIds: string[];
+  handleLocalDeleteBet: (betId: string) => void; // New function to handle local deletion
+}

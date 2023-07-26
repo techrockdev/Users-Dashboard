@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { useQueryClient } from "react-query";
 import { BalanceContext } from "../../context/Balancecontext/BalanceContext";
+import { useDeletedBet } from "./useDeletedBet";
 import { usePost } from "./usePost";
 
 export const useBettingHistoryLogic = () => {
@@ -15,6 +16,7 @@ export const useBettingHistoryLogic = () => {
   const balanceContext = useContext(BalanceContext);
   const queryClient = useQueryClient();
   const { post, isLoading, onSuccess } = usePost();
+  const { handleLocalDeleteBet } = useDeletedBet();
   const date = `${new Date().getMinutes()}:${new Date().getSeconds()}`;
 
   const handlePlayClick = (bet: any) => {
@@ -27,18 +29,18 @@ export const useBettingHistoryLogic = () => {
     setBetAmountInput(e.target.value);
   };
 
-  const hanldePaymentForBet = async () => {
+  const hanldePaymentForBet = async (betId: string) => {
     const newBalance = balanceContext.balance - Number(betBetAmoutInput);
     if (Number(betBetAmoutInput) > balanceContext.balance || !Number(betBetAmoutInput)) {
-      setError(true); // Show the message when the user clicks the button
+      setError(true);
       setTimeout(() => {
         setError(false);
       }, 1000);
       queryClient.invalidateQueries("userbalance");
-      return;
+      return false;
     }
     setPaymentSuccess(true);
-
+    handleLocalDeleteBet(betId);
     setNewBalance(newBalance);
     await post("userbalance", { amount: newBalance });
     await post("placedbetamount", {
@@ -55,6 +57,7 @@ export const useBettingHistoryLogic = () => {
     setTimeout(() => {
       setShowMessageNotifaction(false);
     }, 1000);
+    window.location.reload();
     queryClient.invalidateQueries("userbalance");
   };
 
