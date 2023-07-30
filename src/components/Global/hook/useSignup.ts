@@ -40,6 +40,7 @@ export const useSignup = () => {
           body: JSON.stringify({
             email: user.email,
             displayName: user.name,
+            userid: user.id,
           }),
         });
         dispatch({ type: "LOGIN", payload: user });

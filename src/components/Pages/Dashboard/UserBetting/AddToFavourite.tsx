@@ -70,7 +70,7 @@ export const AddToFavourite = () => {
                   type="number"
                   placeholder="input amount"
                   onChange={handleBetAmout}
-                  className="text-red-500 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  className="w-full text-red-500 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
                 <input
                   value={loading ? "Loading.." : "Pay"}
